@@ -43,4 +43,5 @@ python3 object_detection_yolo.py --label=obj.names --cfg=yolov3-tiny-obj.cfg --m
 ``` 
 
 
-<!-- # Reference -->
+# Reference 
+* Original website: [https://pjreddie.com/darknet/yolo/](https://pjreddie.com/darknet/yolo/)

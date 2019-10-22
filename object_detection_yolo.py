@@ -1,6 +1,5 @@
 # Usage example:  python3 object_detection_yolo.py --video=run.mp4
 #                 python3 object_detection_yolo.py --image=bird.jpg
-#                 python3 object_detection_yolo.py --image=bird.jpg
 #                 python3 object_detection_yolo.py --label=obj.name --cfg=yolov3-tiny-obj.cfg --model=yolov3-tiny-obj_final.weights --image=bird.jpg
 
 #                 python3 object_detection_yolo.py --label=coco.names --cfg=yolov3-tiny.cfg --model=yolov3-tiny.weights --image=fire.jpg
@@ -13,50 +12,42 @@ import os.path
 
 # Initialize the parameters
 #--------------------------------------------------------------------------------------
-confThreshold = 0.5  #Confidence threshold
-nmsThreshold = 0.3   #Non-maximum suppression threshold
-inpWidth = 416       #Width of network's input image
-inpHeight = 416      #Height of network's input image
+confThreshold = 0.4  # Confidence threshold
+nmsThreshold = 0.4   # Non-maximum suppression threshold
+inpWidth = 416       # Width of network's input image
+inpHeight = 416      # Height of network's input image
 
 parser = argparse.ArgumentParser(description='Object Detection using YOLO in OPENCV')
 parser.add_argument('--image', help='Path to image file.')
-parser.add_argument('--video', help='Path to video file.')
-parser.add_argument('--cfg', help='Path to cfg file.')
-parser.add_argument('--model', help='Path to model file.')
-parser.add_argument('--label', help='Path to label file.')
+parser.add_argument('--video', help='Path to video file.', default=0)
+parser.add_argument('--cfg', help='Path to cfg file.', default="models/yolov3-tiny.cfg")
+parser.add_argument('--model', help='Path to model file.', default="models/yolov3-tiny.weights")
+parser.add_argument('--labels', help='Path to label file.', default="models/coco.names")
 args = parser.parse_args()
 
-
+print((args))
 
 # Give the configuration and weight files for the model and load the network using them.
 #--------------------------------------------------------------------------------------
 # get the configuration file
 try:
-    print(not args.cfg)
-    if args.cfg != 'None':
-        modelConfiguration = args.cfg
+    modelConfiguration = args.cfg
 except:
     modelConfiguration = "yolov3-tiny.cfg"
-    # modelConfiguration = "yolov3-tiny-obj.cfg"
 
 # get the weights file 
 try:
     modelWeights = args.model
 except:
     modelWeights = "yolov3-tiny.weights"
-    # modelWeights = "yolov3-tiny-obj_final.weights"
+
 
 # get the label file
-
 try:
-    label = args.label
+    labels = args.labels
 except:
-    label = "coco.names"
-    # label = "obj.names"
+    labels = "coco.names"
 
-print(modelConfiguration)
-print(modelWeights)
-print(label)
 
 net = cv.dnn.readNetFromDarknet(cfgFile=modelConfiguration, darknetModel=modelWeights)
 net.setPreferableBackend(cv.dnn.DNN_BACKEND_OPENCV)
@@ -71,7 +62,7 @@ def getClasses(classesFile):
         classes = f.read().rstrip('\n').split('\n')
     return classes
 
-classes = getClasses(classesFile="obj.names")
+classes = getClasses(classesFile=labels)
 
 ####################################################################################
 # Define some methods
@@ -194,7 +185,7 @@ while cv.waitKey(1) < 0:
     # Stop the program if reached end of video
     if not hasFrame:
         print("Done processing !!!")
-        print("Output file is stored as ", outputFile)
+        # print("Output file is stored as ", outputFile)
         cv.waitKey(3000)
         # Release device
         cap.release()
